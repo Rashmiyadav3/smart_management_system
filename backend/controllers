@@ -1,0 +1,47 @@
+const Project = require('../models/Project');
+
+exports.getProjects = async (req, res, next) => {
+  try {
+    // Only fetch visible projects, sort by newest
+    const projects = await Project.find({ isVisible: true }).sort({ createdAt: -1 });
+    
+    res.status(200).json({
+      success: true,
+      count: projects.length,
+      data: projects
+    });
+  } catch (error) {
+    next(error); // Pass to global error handler
+  }
+};
+
+// @desc    Create new project (Private - for Admin)
+// @route   POST /api/projects
+exports.createProject = async (req, res, next) => {
+  try {
+    // Basic validation handled by Mongoose, but we could add Joi here
+    const project = await Project.create(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: project
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete project
+// @route   DELETE /api/projects/:id
+exports.deleteProject = async (req, res, next) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (!project) {
+      return res.status(404).json({ success: false, message: 'Project not found' });
+    }
+    await project.deleteOne();
+    res.status(200).json({ success: true, data: {} });
+  } catch (error) {
+    next(error);
+  }
+};

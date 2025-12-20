@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 40px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background: #667eea;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Admin Panel</h1>
+<h3>Contact Messages</h3>
+
+<table id="contactTable">
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Subject</th>
+    <th>Message</th>
+  </tr>
+</table>
+
+<script>
+fetch("http://localhost:5000/api/contact")
+  .then(res => res.json())
+  .then(data => {
+    const table = document.getElementById("contactTable");
+    data.forEach(item => {
+      table.innerHTML += `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.email}</td>
+          <td>${item.subject}</td>
+          <td>${item.message}</td>
+        </tr>`;
+    });
+  });
+</script>
+
+</body>
+</html>
